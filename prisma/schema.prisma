@@ -1,0 +1,50 @@
+// Prisma Schema for Delivro Invoice Management System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        String     @id
+  name      String
+  shipments Shipment[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Shipment {
+  id                 String    @id
+  companyId          String
+  company            Company   @relation(fields: [companyId], references: [id])
+  trackingNumber     String
+  provider           String
+  mode               String
+  originCountry      String
+  destinationCountry String
+  createdDate        DateTime
+  latestInvoiceId    String?   @unique
+  latestInvoice      Invoice?  @relation("LatestInvoice", fields: [latestInvoiceId], references: [id])
+  invoices           Invoice[] @relation("ShipmentInvoices")
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([companyId])
+  @@index([trackingNumber])
+}
+
+model Invoice {
+  id                String    @id
+  shipmentId        String
+  shipment          Shipment  @relation("ShipmentInvoices", fields: [shipmentId], references: [id])
+  invoicedWeight    Float
+  invoicedPrice     Float
+  uploadedAt        DateTime  @default(now())
+  latestForShipment Shipment? @relation("LatestInvoice")
+
+  @@index([shipmentId])
+}
