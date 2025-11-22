@@ -3,6 +3,12 @@
 export type Provider = 'GLS' | 'DPD' | 'UPS' | 'PPL' | 'FedEx';
 export type Mode = 'EXPORT' | 'IMPORT';
 
+// Company type
+export interface Company {
+  id: string;
+  name: string;
+}
+
 // Parsed invoice data with calculated mode
 export interface ParsedInvoice {
   id: string;
@@ -10,10 +16,7 @@ export interface ParsedInvoice {
     id: string;
     createdAt: Date;
     trackingNumber: string;
-    company: {
-      id: string;
-      name: string;
-    };
+    company: Company;
     provider: Provider;
     mode: Mode;
     originCountry: string;
@@ -32,10 +35,7 @@ export interface ShipmentWithDetails {
   originCountry: string;
   destinationCountry: string;
   createdDate: string;
-  company: {
-    id: string;
-    name: string;
-  };
+  company: Company;
   latestInvoice: {
     id: string;
     invoicedPrice: number;

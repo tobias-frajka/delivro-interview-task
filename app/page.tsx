@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { ShipmentGrid } from '@/components/shipments/ShipmentGrid';
 import { CompanyFilter } from '@/components/shipments/CompanyFilter';
 import { UploadModal } from '@/components/upload/UploadModal';
@@ -11,16 +11,10 @@ import { Button } from '@/components/ui/Button';
 import { useUploadStore } from '@/store/useUploadStore';
 import { useHistoryStore } from '@/store/useHistoryStore';
 import { useShipmentsStore } from '@/store/useShipmentsStore';
-import type { ShipmentWithDetails } from '@/types';
-
-interface Company {
-  id: string;
-  name: string;
-}
+import type { ShipmentWithDetails, Company } from '@/types';
 
 export default function Home() {
   const [shipments, setShipments] = useState<ShipmentWithDetails[]>([]);
-  const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Optimize store subscriptions - only subscribe to what we need
@@ -37,11 +31,7 @@ export default function Home() {
   const selectedCompanyId = useShipmentsStore((state) => state.selectedCompanyId);
   const setSelectedCompanyId = useShipmentsStore((state) => state.setSelectedCompanyId);
 
-  useEffect(() => {
-    fetchShipments();
-  }, [selectedCompanyId]);
-
-  const fetchShipments = async () => {
+  const fetchShipments = useCallback(async () => {
     setIsLoading(true);
     try {
       const url = selectedCompanyId
@@ -53,23 +43,28 @@ export default function Home() {
 
       if (result.success) {
         setShipments(result.data);
-
-        // Extract unique companies
-        const uniqueCompanies = result.data.reduce((acc: Company[], shipment: ShipmentWithDetails) => {
-          if (!acc.find((c) => c.id === shipment.company.id)) {
-            acc.push(shipment.company);
-          }
-          return acc;
-        }, []);
-
-        setCompanies(uniqueCompanies);
       }
     } catch (error) {
       console.error('Failed to fetch shipments:', error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedCompanyId]);
+
+  useEffect(() => {
+    fetchShipments();
+  }, [fetchShipments]);
+
+  // Extract unique companies from shipments with O(n) complexity using Map
+  const companies = useMemo(() => {
+    const companyMap = new Map<string, Company>();
+    shipments.forEach((shipment) => {
+      if (!companyMap.has(shipment.company.id)) {
+        companyMap.set(shipment.company.id, shipment.company);
+      }
+    });
+    return Array.from(companyMap.values());
+  }, [shipments]);
 
   const handleUploadSuccess = () => {
     fetchShipments();

@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -21,18 +21,22 @@ export const Modal: React.FC<ModalProps> = React.memo(({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
+  // Use useLayoutEffect to set visible state immediately after DOM mutation
+  useLayoutEffect(() => {
     if (isOpen) {
-      // Batch DOM operations to minimize reflows
-      const timer = setTimeout(() => setIsVisible(true), 0);
-      document.body.style.overflow = 'hidden';
-      return () => {
-        clearTimeout(timer);
-        document.body.style.overflow = 'unset';
-      };
+      setIsVisible(true);
     } else {
       setIsVisible(false);
-      document.body.style.overflow = 'unset';
+    }
+  }, [isOpen]);
+
+  // Separate effect for body scroll lock
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
     }
   }, [isOpen]);
 

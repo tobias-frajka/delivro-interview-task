@@ -46,9 +46,7 @@ export const PriceHistoryModal: React.FC<PriceHistoryModalProps> = React.memo(({
 
   useEffect(() => {
     if (isOpen && shipmentId) {
-      // Defer fetch slightly to let modal render first
-      const timer = setTimeout(fetchHistory, 10);
-      return () => clearTimeout(timer);
+      fetchHistory();
     } else {
       // Clear data when closed to reduce memory usage
       setHistory([]);
