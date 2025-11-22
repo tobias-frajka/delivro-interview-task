@@ -27,6 +27,9 @@ model Shipment {
   originCountry      String
   destinationCountry String
   createdDate        DateTime
+  // NOTE: latestInvoiceId type is hardcoded as ::text in raw SQL query
+  // at app/api/invoices/confirm/route.ts. If you change this type,
+  // update the type casting in that query as well.
   latestInvoiceId    String?   @unique
   latestInvoice      Invoice?  @relation("LatestInvoice", fields: [latestInvoiceId], references: [id])
   invoices           Invoice[] @relation("ShipmentInvoices")
