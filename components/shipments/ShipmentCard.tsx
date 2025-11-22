@@ -42,9 +42,9 @@ export const ShipmentCard: React.FC<ShipmentCardProps> = ({
       </div>
 
       {/* Route */}
-      <div className="flex items-center justify-center space-x-2 mb-3 py-2 bg-gray-50 rounded">
+      <div className="flex items-center justify-center space-x-2 mb-3 py-2 bg-gray-50 rounded text-gray-700">
         <span className="text-2xl">{getCountryFlag(shipment.originCountry)}</span>
-        <span className="text-gray-400">→</span>
+        <span>→</span>
         <span className="text-2xl">{getCountryFlag(shipment.destinationCountry)}</span>
       </div>
 
