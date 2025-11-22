@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { ShipmentGrid } from '@/components/shipments/ShipmentGrid';
 import { CompanyFilter } from '@/components/shipments/CompanyFilter';
 import { UploadModal } from '@/components/upload/UploadModal';
@@ -16,6 +16,8 @@ import type { ShipmentWithDetails, Company } from '@/types';
 export default function Home() {
   const [shipments, setShipments] = useState<ShipmentWithDetails[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  // Cache the full company list to persist across filters
+  const [cachedCompanies, setCachedCompanies] = useState<Company[]>([]);
 
   // Optimize store subscriptions - only subscribe to what we need
   // Using stable selectors to prevent unnecessary re-subscriptions
@@ -43,6 +45,18 @@ export default function Home() {
 
       if (result.success) {
         setShipments(result.data);
+
+        // Only extract and cache companies when fetching ALL shipments (no filter)
+        // This ensures the dropdown always shows all available companies
+        if (!selectedCompanyId) {
+          const companyMap = new Map<string, Company>();
+          result.data.forEach((shipment: ShipmentWithDetails) => {
+            if (!companyMap.has(shipment.company.id)) {
+              companyMap.set(shipment.company.id, shipment.company);
+            }
+          });
+          setCachedCompanies(Array.from(companyMap.values()));
+        }
       }
     } catch (error) {
       console.error('Failed to fetch shipments:', error);
@@ -55,19 +69,9 @@ export default function Home() {
     fetchShipments();
   }, [fetchShipments]);
 
-  // Extract unique companies from shipments with O(n) complexity using Map
-  const companies = useMemo(() => {
-    const companyMap = new Map<string, Company>();
-    shipments.forEach((shipment) => {
-      if (!companyMap.has(shipment.company.id)) {
-        companyMap.set(shipment.company.id, shipment.company);
-      }
-    });
-    return Array.from(companyMap.values());
-  }, [shipments]);
-
   const handleUploadSuccess = () => {
-    fetchShipments();
+    // Clear filter to fetch all shipments and refresh company cache
+    setSelectedCompanyId(null);
   };
 
   return (
@@ -92,7 +96,7 @@ export default function Home() {
         {/* Filters */}
         <div className="mb-6 flex items-center justify-between">
           <CompanyFilter
-            companies={companies}
+            companies={cachedCompanies}
             selectedCompanyId={selectedCompanyId}
             onSelect={setSelectedCompanyId}
           />
