@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { ShipmentGrid } from '@/components/shipments/ShipmentGrid';
 import { CompanyFilter } from '@/components/shipments/CompanyFilter';
 import { UploadModal } from '@/components/upload/UploadModal';
@@ -23,9 +23,19 @@ export default function Home() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { isUploadModalOpen, openUploadModal, closeUploadModal } = useUploadStore();
-  const { isHistoryModalOpen, selectedShipmentId, openHistoryModal, closeHistoryModal } = useHistoryStore();
-  const { selectedCompanyId, setSelectedCompanyId } = useShipmentsStore();
+  // Optimize store subscriptions - only subscribe to what we need
+  // Using stable selectors to prevent unnecessary re-subscriptions
+  const isUploadModalOpen = useUploadStore((state) => state.isUploadModalOpen);
+  const openUploadModal = useUploadStore((state) => state.openUploadModal);
+  const closeUploadModal = useUploadStore((state) => state.closeUploadModal);
+
+  const isHistoryModalOpen = useHistoryStore((state) => state.isHistoryModalOpen);
+  const selectedShipmentId = useHistoryStore((state) => state.selectedShipmentId);
+  const openHistoryModal = useHistoryStore((state) => state.openHistoryModal);
+  const closeHistoryModal = useHistoryStore((state) => state.closeHistoryModal);
+
+  const selectedCompanyId = useShipmentsStore((state) => state.selectedCompanyId);
+  const setSelectedCompanyId = useShipmentsStore((state) => state.setSelectedCompanyId);
 
   useEffect(() => {
     fetchShipments();

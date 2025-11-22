@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -12,23 +12,28 @@ interface ModalProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
-export const Modal: React.FC<ModalProps> = ({
+export const Modal: React.FC<ModalProps> = React.memo(({
   isOpen,
   onClose,
   title,
   children,
   size = 'md',
 }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
   useEffect(() => {
     if (isOpen) {
+      // Batch DOM operations to minimize reflows
+      const timer = setTimeout(() => setIsVisible(true), 0);
       document.body.style.overflow = 'hidden';
+      return () => {
+        clearTimeout(timer);
+        document.body.style.overflow = 'unset';
+      };
     } else {
+      setIsVisible(false);
       document.body.style.overflow = 'unset';
     }
-
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -42,15 +47,26 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-200 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+      style={{ contain: 'layout style paint' }}
+    >
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50"
         onClick={onClose}
+        style={{ willChange: 'opacity' }}
       />
 
       {/* Modal */}
-      <div className={`relative bg-white rounded-lg shadow-xl ${sizeStyles[size]} w-full max-h-[90vh] flex flex-col`}>
+      <div
+        className={`relative bg-white rounded-lg shadow-xl ${sizeStyles[size]} w-full max-h-[90vh] flex flex-col transition-transform duration-200 ${isVisible ? 'scale-100' : 'scale-95'}`}
+        style={{
+          willChange: 'transform, opacity',
+          contain: 'layout style paint',
+          transform: isVisible ? 'scale(1) translateZ(0)' : 'scale(0.95) translateZ(0)'
+        }}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
@@ -71,4 +87,6 @@ export const Modal: React.FC<ModalProps> = ({
       </div>
     </div>
   );
-};
+});
+
+Modal.displayName = 'Modal';

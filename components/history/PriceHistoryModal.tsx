@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import type { InvoiceHistory } from '@/types';
 import { formatDate, formatPrice, formatWeight } from '@/lib/utils';
@@ -13,7 +13,7 @@ interface PriceHistoryModalProps {
   shipmentId: string | null;
 }
 
-export const PriceHistoryModal: React.FC<PriceHistoryModalProps> = ({
+export const PriceHistoryModal: React.FC<PriceHistoryModalProps> = React.memo(({
   isOpen,
   onClose,
   shipmentId,
@@ -22,13 +22,7 @@ export const PriceHistoryModal: React.FC<PriceHistoryModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (isOpen && shipmentId) {
-      fetchHistory();
-    }
-  }, [isOpen, shipmentId]);
-
-  const fetchHistory = async () => {
+  const fetchHistory = useCallback(async () => {
     if (!shipmentId) return;
 
     setIsLoading(true);
@@ -48,7 +42,19 @@ export const PriceHistoryModal: React.FC<PriceHistoryModalProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [shipmentId]);
+
+  useEffect(() => {
+    if (isOpen && shipmentId) {
+      // Defer fetch slightly to let modal render first
+      const timer = setTimeout(fetchHistory, 10);
+      return () => clearTimeout(timer);
+    } else {
+      // Clear data when closed to reduce memory usage
+      setHistory([]);
+      setError(null);
+    }
+  }, [isOpen, shipmentId, fetchHistory]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Price History" size="lg">
@@ -134,4 +140,6 @@ export const PriceHistoryModal: React.FC<PriceHistoryModalProps> = ({
       </div>
     </Modal>
   );
-};
+});
+
+PriceHistoryModal.displayName = 'PriceHistoryModal';

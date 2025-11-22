@@ -2,7 +2,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { ShipmentWithDetails } from '@/types';
 import { ShipmentCard } from './ShipmentCard';
 
@@ -12,7 +12,7 @@ interface ShipmentGridProps {
   isLoading?: boolean;
 }
 
-export const ShipmentGrid: React.FC<ShipmentGridProps> = ({
+export const ShipmentGrid: React.FC<ShipmentGridProps> = React.memo(({
   shipments,
   onViewHistory,
   isLoading = false,
@@ -56,4 +56,6 @@ export const ShipmentGrid: React.FC<ShipmentGridProps> = ({
       ))}
     </div>
   );
-};
+});
+
+ShipmentGrid.displayName = 'ShipmentGrid';

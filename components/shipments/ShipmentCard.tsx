@@ -2,7 +2,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useCallback, startTransition } from 'react';
 import type { ShipmentWithDetails } from '@/types';
 import { formatDate, formatPrice, formatWeight, getCountryFlag } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
@@ -12,10 +12,16 @@ interface ShipmentCardProps {
   onViewHistory: (shipmentId: string) => void;
 }
 
-export const ShipmentCard: React.FC<ShipmentCardProps> = ({
+export const ShipmentCard: React.FC<ShipmentCardProps> = React.memo(({
   shipment,
   onViewHistory,
 }) => {
+  // Use startTransition to mark modal opening as non-urgent, keeping UI responsive
+  const handleViewHistory = useCallback(() => {
+    startTransition(() => {
+      onViewHistory(shipment.id);
+    });
+  }, [shipment.id, onViewHistory]);
   const modeColor = shipment.mode === 'EXPORT' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800';
 
   return (
@@ -74,11 +80,13 @@ export const ShipmentCard: React.FC<ShipmentCardProps> = ({
         <Button
           size="sm"
           variant="secondary"
-          onClick={() => onViewHistory(shipment.id)}
+          onClick={handleViewHistory}
         >
           View History
         </Button>
       </div>
     </div>
   );
-};
+});
+
+ShipmentCard.displayName = 'ShipmentCard';
