@@ -1,0 +1,69 @@
+{
+  "app": {
+    "title": "Delivro",
+    "subtitle": "Invoice Management System"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "error": "Error",
+    "noData": "No data available"
+  },
+  "header": {
+    "uploadInvoices": "Upload Invoices"
+  },
+  "dashboard": {
+    "filterByCompany": "Filter by company:",
+    "allCompanies": "All Companies",
+    "showingShipments": "Showing {count} shipments",
+    "shipments": "shipments"
+  },
+  "shipmentCard": {
+    "trackingNumber": "TRK#",
+    "latestPrice": "Latest Price",
+    "weight": "Weight",
+    "noInvoiceData": "No invoice data",
+    "viewHistory": "View History",
+    "export": "EXPORT",
+    "import": "IMPORT"
+  },
+  "shipmentGrid": {
+    "loadingShipments": "Loading shipments...",
+    "noShipmentsFound": "No shipments found",
+    "uploadToGetStarted": "Upload an invoice file to get started"
+  },
+  "uploadModal": {
+    "title": "Upload Invoice File",
+    "selectFile": "Select JSON file with invoice data",
+    "selectedFile": "Selected file:",
+    "processingFile": "Processing file...",
+    "preview": "Preview",
+    "invoices": "invoices",
+    "confirmUpload": "Confirm Upload",
+    "confirming": "Confirming...",
+    "failedToParse": "Failed to parse file",
+    "failedToUpload": "Failed to upload file. Please try again.",
+    "failedToSave": "Failed to save invoices. Please try again."
+  },
+  "previewTable": {
+    "invoiceId": "Invoice ID",
+    "tracking": "Tracking",
+    "company": "Company",
+    "provider": "Provider",
+    "mode": "Mode",
+    "price": "Price",
+    "weight": "Weight"
+  },
+  "historyModal": {
+    "title": "Price History",
+    "loadingHistory": "Loading history...",
+    "invoiceId": "Invoice ID",
+    "price": "Price",
+    "weight": "Weight",
+    "uploadedAt": "Uploaded At",
+    "latest": "Latest",
+    "noHistoryFound": "No invoice history found for this shipment",
+    "failedToFetch": "Failed to fetch invoice history"
+  }
+}

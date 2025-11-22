@@ -3,6 +3,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import { Select } from '@/components/ui/Select';
 
 interface Company {
@@ -21,6 +22,7 @@ export const CompanyFilter: React.FC<CompanyFilterProps> = ({
   selectedCompanyId,
   onSelect,
 }) => {
+  const t = useTranslations('dashboard');
   const options = companies.map((company) => ({
     value: company.id,
     label: company.name,
@@ -33,13 +35,13 @@ export const CompanyFilter: React.FC<CompanyFilterProps> = ({
   return (
     <div className="flex items-center space-x-2">
       <label htmlFor="company-filter" className="text-sm font-medium text-gray-700">
-        Filter by company:
+        {t('filterByCompany')}
       </label>
       <Select
         options={options}
         value={selectedCompanyId || ''}
         onChange={handleChange}
-        placeholder="All Companies"
+        placeholder={t('allCompanies')}
       />
     </div>
   );

@@ -3,6 +3,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { PreviewTable } from './PreviewTable';
@@ -19,6 +20,8 @@ export const UploadModal: React.FC<UploadModalProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const t = useTranslations('uploadModal');
+  const tCommon = useTranslations('common');
   const [file, setFile] = useState<File | null>(null);
   const [previewData, setPreviewData] = useState<ParsedInvoice[] | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -48,11 +51,11 @@ export const UploadModal: React.FC<UploadModalProps> = ({
       if (result.success) {
         setPreviewData(result.data);
       } else {
-        setError(result.error || 'Failed to parse file');
+        setError(result.error || t('failedToParse'));
         setPreviewData(null);
       }
     } catch (err) {
-      setError('Failed to upload file. Please try again.');
+      setError(t('failedToUpload'));
       setPreviewData(null);
     } finally {
       setIsUploading(false);
@@ -80,10 +83,10 @@ export const UploadModal: React.FC<UploadModalProps> = ({
         onSuccess();
         handleModalClose();
       } else {
-        setError(result.error || 'Failed to save invoices');
+        setError(result.error || t('failedToSave'));
       }
     } catch (err) {
-      setError('Failed to save invoices. Please try again.');
+      setError(t('failedToSave'));
     } finally {
       setIsConfirming(false);
     }
@@ -102,12 +105,12 @@ export const UploadModal: React.FC<UploadModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleModalClose} title="Upload Invoice File" size="full">
+    <Modal isOpen={isOpen} onClose={handleModalClose} title={t('title')} size="full">
       <div className="space-y-4">
         {/* File Input */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Select JSON file with invoice data
+            {t('selectFile')}
           </label>
           <input
             ref={fileInputRef}
@@ -118,7 +121,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
           />
           {file && (
             <p className="mt-2 text-sm text-gray-600">
-              Selected file: <span className="font-semibold">{file.name}</span>
+              {t('selectedFile')} <span className="font-semibold">{file.name}</span>
             </p>
           )}
         </div>
@@ -138,7 +141,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <p className="text-gray-600">Processing file...</p>
+              <p className="text-gray-600">{t('processingFile')}</p>
             </div>
           </div>
         )}
@@ -147,7 +150,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
         {previewData && !isUploading && (
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-3">
-              Preview ({previewData.length} invoices)
+              {t('preview')} ({previewData.length} {t('invoices')})
             </h3>
             <PreviewTable invoices={previewData} />
           </div>
@@ -156,7 +159,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
         {/* Actions */}
         <div className="flex items-center justify-end space-x-3 pt-4 border-t">
           <Button variant="secondary" onClick={handleModalClose} disabled={isConfirming}>
-            Cancel
+            {tCommon('cancel')}
           </Button>
           <Button
             variant="primary"
@@ -164,7 +167,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
             disabled={!previewData || isConfirming}
             isLoading={isConfirming}
           >
-            {isConfirming ? 'Confirming...' : 'Confirm Upload'}
+            {isConfirming ? t('confirming') : t('confirmUpload')}
           </Button>
         </div>
       </div>

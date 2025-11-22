@@ -3,17 +3,20 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { ShipmentGrid } from '@/components/shipments/ShipmentGrid';
 import { CompanyFilter } from '@/components/shipments/CompanyFilter';
 import { UploadModal } from '@/components/upload/UploadModal';
 import { PriceHistoryModal } from '@/components/history/PriceHistoryModal';
 import { Button } from '@/components/ui/Button';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { useUploadStore } from '@/store/useUploadStore';
 import { useHistoryStore } from '@/store/useHistoryStore';
 import { useShipmentsStore } from '@/store/useShipmentsStore';
 import type { ShipmentWithDetails, Company } from '@/types';
 
 export default function Home() {
+  const t = useTranslations();
   const [shipments, setShipments] = useState<ShipmentWithDetails[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   // Cache the full company list to persist across filters
@@ -81,12 +84,15 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Delivro</h1>
-              <p className="text-sm text-gray-600 mt-1">Invoice Management System</p>
+              <h1 className="text-3xl font-bold text-gray-900">{t('app.title')}</h1>
+              <p className="text-sm text-gray-600 mt-1">{t('app.subtitle')}</p>
             </div>
-            <Button onClick={openUploadModal}>
-              Upload Invoices
-            </Button>
+            <div className="flex items-center space-x-3">
+              <LanguageSwitcher />
+              <Button onClick={openUploadModal}>
+                {t('header.uploadInvoices')}
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -104,7 +110,7 @@ export default function Home() {
           {/* Stats */}
           {!isLoading && (
             <div className="text-sm text-gray-600">
-              Showing <span className="font-semibold">{shipments.length}</span> shipments
+              {t('dashboard.showingShipments', { count: shipments.length })}
             </div>
           )}
         </div>

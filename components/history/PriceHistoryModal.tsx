@@ -3,6 +3,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { Modal } from '@/components/ui/Modal';
 import type { InvoiceHistory } from '@/types';
 import { formatDate, formatPrice, formatWeight } from '@/lib/utils';
@@ -18,6 +19,7 @@ export const PriceHistoryModal: React.FC<PriceHistoryModalProps> = React.memo(({
   onClose,
   shipmentId,
 }) => {
+  const t = useTranslations('historyModal');
   const [history, setHistory] = useState<InvoiceHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,14 +37,14 @@ export const PriceHistoryModal: React.FC<PriceHistoryModalProps> = React.memo(({
       if (result.success) {
         setHistory(result.data);
       } else {
-        setError(result.error || 'Failed to fetch history');
+        setError(result.error || t('failedToFetch'));
       }
     } catch (err) {
-      setError('Failed to fetch invoice history');
+      setError(t('failedToFetch'));
     } finally {
       setIsLoading(false);
     }
-  }, [shipmentId]);
+  }, [shipmentId, t]);
 
   useEffect(() => {
     if (isOpen && shipmentId) {
@@ -55,7 +57,7 @@ export const PriceHistoryModal: React.FC<PriceHistoryModalProps> = React.memo(({
   }, [isOpen, shipmentId, fetchHistory]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Price History" size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={t('title')} size="lg">
       <div className="space-y-4">
         {/* Loading State */}
         {isLoading && (
@@ -65,7 +67,7 @@ export const PriceHistoryModal: React.FC<PriceHistoryModalProps> = React.memo(({
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <p className="text-gray-600">Loading history...</p>
+              <p className="text-gray-600">{t('loadingHistory')}</p>
             </div>
           </div>
         )}
@@ -84,16 +86,16 @@ export const PriceHistoryModal: React.FC<PriceHistoryModalProps> = React.memo(({
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Invoice ID
+                    {t('invoiceId')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Price
+                    {t('price')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Weight
+                    {t('weight')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Uploaded At
+                    {t('uploadedAt')}
                   </th>
                 </tr>
               </thead>
@@ -109,7 +111,7 @@ export const PriceHistoryModal: React.FC<PriceHistoryModalProps> = React.memo(({
                       {invoice.id.substring(0, 16)}...
                       {index === 0 && (
                         <span className="ml-2 px-2 py-1 bg-yellow-200 text-yellow-800 rounded-full text-xs font-semibold">
-                          Latest
+                          {t('latest')}
                         </span>
                       )}
                     </td>
@@ -132,7 +134,7 @@ export const PriceHistoryModal: React.FC<PriceHistoryModalProps> = React.memo(({
         {/* Empty State */}
         {!isLoading && !error && history.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">No invoice history found for this shipment</p>
+            <p className="text-gray-500">{t('noHistoryFound')}</p>
           </div>
         )}
       </div>

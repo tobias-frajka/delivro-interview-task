@@ -22,6 +22,7 @@ A full-stack invoice management system for tracking shipping invoices from multi
 - View price history for each shipment
 - Automatic invoice updates for existing shipments
 - Mobile-responsive design
+- Internationalization (i18n) support - English and Czech languages
 
 ## Prerequisites
 
@@ -114,6 +115,13 @@ pnpm start
 - Click "View History" on any shipment card
 - See all invoice records for that shipment
 - Latest invoice is highlighted in yellow
+
+### Language Selection
+
+- Use the language switcher in the top right header (🇬🇧 English / 🇨🇿 Čeština)
+- Switch between English and Czech languages
+- All UI text is automatically translated
+- Language preference is maintained via URL path
 
 ## Database Schema
 
@@ -226,6 +234,7 @@ Test the application with the provided sample files:
 - **Responsive Design**: Works on mobile, tablet, and desktop
 - **Loading States**: Visual feedback during data operations
 - **Error Handling**: Comprehensive error messages for failed operations
+- **Internationalization (i18n)**: Full support for English and Czech languages with easy language switching
 
 ## Future Enhancements
 
@@ -233,7 +242,7 @@ Test the application with the provided sample files:
 - Search by tracking number
 - Export to CSV/Excel
 - Date range filtering
-- Internationalization (i18n)
+- Additional language support (Slovak, Polish, etc.)
 - Docker containerization
 - Deployment to Vercel
 

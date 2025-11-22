@@ -1,0 +1,69 @@
+{
+  "app": {
+    "title": "Delivro",
+    "subtitle": "Systém správy faktur"
+  },
+  "common": {
+    "cancel": "Zrušit",
+    "confirm": "Potvrdit",
+    "loading": "Načítání...",
+    "error": "Chyba",
+    "noData": "Žádná data k dispozici"
+  },
+  "header": {
+    "uploadInvoices": "Nahrát faktury"
+  },
+  "dashboard": {
+    "filterByCompany": "Filtrovat podle společnosti:",
+    "allCompanies": "Všechny společnosti",
+    "showingShipments": "Zobrazeno {count} zásilek",
+    "shipments": "zásilek"
+  },
+  "shipmentCard": {
+    "trackingNumber": "SČ#",
+    "latestPrice": "Poslední cena",
+    "weight": "Hmotnost",
+    "noInvoiceData": "Žádná fakturační data",
+    "viewHistory": "Zobrazit historii",
+    "export": "EXPORT",
+    "import": "IMPORT"
+  },
+  "shipmentGrid": {
+    "loadingShipments": "Načítání zásilek...",
+    "noShipmentsFound": "Žádné zásilky nenalezeny",
+    "uploadToGetStarted": "Nahrajte soubor s fakturami pro začátek"
+  },
+  "uploadModal": {
+    "title": "Nahrát soubor s fakturami",
+    "selectFile": "Vyberte JSON soubor s fakturačními daty",
+    "selectedFile": "Vybraný soubor:",
+    "processingFile": "Zpracování souboru...",
+    "preview": "Náhled",
+    "invoices": "faktur",
+    "confirmUpload": "Potvrdit nahrání",
+    "confirming": "Potvrzování...",
+    "failedToParse": "Nepodařilo se analyzovat soubor",
+    "failedToUpload": "Nahrání souboru selhalo. Zkuste to prosím znovu.",
+    "failedToSave": "Uložení faktur selhalo. Zkuste to prosím znovu."
+  },
+  "previewTable": {
+    "invoiceId": "ID faktury",
+    "tracking": "Sledování",
+    "company": "Společnost",
+    "provider": "Dopravce",
+    "mode": "Režim",
+    "price": "Cena",
+    "weight": "Hmotnost"
+  },
+  "historyModal": {
+    "title": "Historie cen",
+    "loadingHistory": "Načítání historie...",
+    "invoiceId": "ID faktury",
+    "price": "Cena",
+    "weight": "Hmotnost",
+    "uploadedAt": "Nahráno dne",
+    "latest": "Nejnovější",
+    "noHistoryFound": "Pro tuto zásilku nebyla nalezena žádná historie faktur",
+    "failedToFetch": "Nepodařilo se načíst historii faktur"
+  }
+}

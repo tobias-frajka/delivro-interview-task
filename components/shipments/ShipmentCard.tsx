@@ -3,6 +3,7 @@
 'use client';
 
 import React, { useCallback, startTransition } from 'react';
+import { useTranslations } from 'next-intl';
 import type { ShipmentWithDetails } from '@/types';
 import { formatDate, formatPrice, formatWeight, getCountryFlag } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
@@ -16,6 +17,7 @@ export const ShipmentCard: React.FC<ShipmentCardProps> = React.memo(({
   shipment,
   onViewHistory,
 }) => {
+  const t = useTranslations('shipmentCard');
   // Use startTransition to mark modal opening as non-urgent, keeping UI responsive
   const handleViewHistory = useCallback(() => {
     startTransition(() => {
@@ -32,13 +34,13 @@ export const ShipmentCard: React.FC<ShipmentCardProps> = React.memo(({
           <span className="text-2xl font-bold text-gray-900">{shipment.provider}</span>
         </div>
         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${modeColor}`}>
-          {shipment.mode}
+          {t(shipment.mode.toLowerCase() as 'export' | 'import')}
         </span>
       </div>
 
       {/* Tracking Number */}
       <div className="mb-2">
-        <span className="text-sm text-gray-500">TRK#</span>
+        <span className="text-sm text-gray-500">{t('trackingNumber')}</span>
         <p className="text-lg font-semibold text-gray-800">{shipment.trackingNumber}</p>
       </div>
 
@@ -59,18 +61,18 @@ export const ShipmentCard: React.FC<ShipmentCardProps> = React.memo(({
         <div className="mb-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
           <div className="flex justify-between items-center">
             <div>
-              <p className="text-sm text-gray-600">Latest Price</p>
+              <p className="text-sm text-gray-600">{t('latestPrice')}</p>
               <p className="text-xl font-bold text-gray-900">{formatPrice(shipment.latestInvoice.invoicedPrice)}</p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-gray-600">Weight</p>
+              <p className="text-sm text-gray-600">{t('weight')}</p>
               <p className="text-lg font-semibold text-gray-800">{formatWeight(shipment.latestInvoice.invoicedWeight)}</p>
             </div>
           </div>
         </div>
       ) : (
         <div className="mb-3 p-3 bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-500 text-center">No invoice data</p>
+          <p className="text-sm text-gray-500 text-center">{t('noInvoiceData')}</p>
         </div>
       )}
 
@@ -82,7 +84,7 @@ export const ShipmentCard: React.FC<ShipmentCardProps> = React.memo(({
           variant="secondary"
           onClick={handleViewHistory}
         >
-          View History
+          {t('viewHistory')}
         </Button>
       </div>
     </div>
