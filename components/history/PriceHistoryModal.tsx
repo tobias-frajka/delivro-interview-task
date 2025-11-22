@@ -39,7 +39,7 @@ export const PriceHistoryModal: React.FC<PriceHistoryModalProps> = React.memo(({
       } else {
         setError(result.error || t('failedToFetch'));
       }
-    } catch (err) {
+    } catch {
       setError(t('failedToFetch'));
     } finally {
       setIsLoading(false);

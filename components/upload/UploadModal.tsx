@@ -54,7 +54,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
         setError(result.error || t('failedToParse'));
         setPreviewData(null);
       }
-    } catch (err) {
+    } catch {
       setError(t('failedToUpload'));
       setPreviewData(null);
     } finally {
@@ -85,7 +85,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
       } else {
         setError(result.error || t('failedToSave'));
       }
-    } catch (err) {
+    } catch {
       setError(t('failedToSave'));
     } finally {
       setIsConfirming(false);

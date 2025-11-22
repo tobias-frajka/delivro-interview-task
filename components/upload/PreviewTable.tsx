@@ -5,7 +5,7 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import type { ParsedInvoice } from '@/types';
-import { formatDate, formatPrice, formatWeight } from '@/lib/utils';
+import { formatPrice, formatWeight } from '@/lib/utils';
 
 interface PreviewTableProps {
   invoices: ParsedInvoice[];

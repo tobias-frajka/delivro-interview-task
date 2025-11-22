@@ -17,18 +17,13 @@ export const metadata: Metadata = {
   description: "Invoice management system for tracking shipping invoices from multiple carrier partners",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
-  params,
 }: Readonly<{
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
 }>) {
-  // Await params in Next.js 16
-  const { locale } = await params;
-
   return (
-    <html lang={locale}>
+    <html>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

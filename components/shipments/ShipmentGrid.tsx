@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useTranslations } from 'next-intl';
 import type { ShipmentWithDetails } from '@/types';
 import { ShipmentCard } from './ShipmentCard';

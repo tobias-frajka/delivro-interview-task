@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -19,18 +19,7 @@ export const Modal: React.FC<ModalProps> = React.memo(({
   children,
   size = 'md',
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  // Use useLayoutEffect to set visible state immediately after DOM mutation
-  useLayoutEffect(() => {
-    if (isOpen) {
-      setIsVisible(true);
-    } else {
-      setIsVisible(false);
-    }
-  }, [isOpen]);
-
-  // Separate effect for body scroll lock
+  // Effect for body scroll lock
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -52,23 +41,22 @@ export const Modal: React.FC<ModalProps> = React.memo(({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-200 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+      className="fixed inset-0 z-50 flex items-center justify-center animate-[fadeIn_0.2s_ease-out]"
       style={{ contain: 'layout style paint' }}
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50"
+        className="absolute inset-0 bg-black/50 animate-[fadeIn_0.2s_ease-out]"
         onClick={onClose}
         style={{ willChange: 'opacity' }}
       />
 
       {/* Modal */}
       <div
-        className={`relative bg-white rounded-lg shadow-xl ${sizeStyles[size]} w-full max-h-[90vh] flex flex-col transition-transform duration-200 ${isVisible ? 'scale-100' : 'scale-95'}`}
+        className={`relative bg-white rounded-lg shadow-xl ${sizeStyles[size]} w-full max-h-[90vh] flex flex-col animate-[scaleIn_0.2s_ease-out]`}
         style={{
           willChange: 'transform, opacity',
           contain: 'layout style paint',
-          transform: isVisible ? 'scale(1) translateZ(0)' : 'scale(0.95) translateZ(0)'
         }}
       >
         {/* Header */}
