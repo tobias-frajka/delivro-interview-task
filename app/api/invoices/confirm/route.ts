@@ -3,6 +3,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 import type { ParsedInvoice, UploadStats } from '@/types';
 
 export async function POST(request: NextRequest) {
@@ -101,12 +102,26 @@ export async function POST(request: NextRequest) {
         });
         stats.invoicesCreated = invoices.length;
 
-        // Update all shipments with their latest invoice
-        for (const invoice of invoices) {
-          await tx.shipment.update({
-            where: { id: invoice.shipment.id },
-            data: { latestInvoiceId: invoice.id },
-          });
+        // Update all shipments with their latest invoice in a single query
+        // Note: Using raw SQL here because Prisma doesn't support updating
+        // multiple rows with different values in a single query. This reduces
+        // N individual UPDATE queries to just 1, dramatically improving performance
+        // for bulk uploads.
+        if (invoices.length > 0) {
+          const values = invoices.map(
+            (inv) => Prisma.sql`(${inv.shipment.id}, ${inv.id})`
+          );
+          const valuesClause = Prisma.join(values, ', ');
+
+          // Important: The ::text casting prevents PostgreSQL type inference issues.
+          // Without explicit casting, Postgres might infer incorrect types from the
+          // VALUES clause, potentially causing "operator does not exist" errors.
+          await tx.$executeRaw`
+            UPDATE "Shipment"
+            SET "latestInvoiceId" = v.invoice_id::text, "updatedAt" = NOW()
+            FROM (VALUES ${valuesClause}) AS v(shipment_id, invoice_id)
+            WHERE "Shipment"."id" = v.shipment_id::text
+          `;
         }
 
         stats.shipmentsUpdated = invoices.filter((inv) =>
